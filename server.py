@@ -20,9 +20,12 @@ def push():
 
 @app.route("/toy-next", methods=["GET"])
 def toy_next():
-    """bridge轮询这里取指令"""
+    """bridge轮询这里取指令，取完即重置，防止重复执行"""
+    global cmd
     with lock:
-        return jsonify(cmd)
+        resp = cmd
+        cmd = {"type": "hello"}  # 取完重置
+        return jsonify(resp)
 
 @app.route("/", methods=["GET"])
 def health():
